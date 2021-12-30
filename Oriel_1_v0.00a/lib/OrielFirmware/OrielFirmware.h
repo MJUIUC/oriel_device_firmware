@@ -1,6 +1,6 @@
 /**
  * @file OrielFirmware.h
- * @author Marcus Jefferson (you@domain.com)
+ * @author Marcus Jefferson (marcus@orielware.com)
  * @brief Main wrapper class covering all core device logic and definitions
  * @version 0.00a
  * @date 2021-12-29
@@ -13,15 +13,14 @@
 
 #include <Arduino.h>
 #include <DisplayController.h>
+#include <FileController.h>
 
-#define DEVICE_VERSION "1.00"
+#define DEVICE_VERSION 1
 #define FIRMWARE_VERSION "0.00a"
 
 enum DeviceStates {
-  OFF,
-  ON,
-  CHARGING,
-  SYNCING
+  IMAGE_CYCLING,
+  SERVER_SYNCING
 };
 
 struct DeviceConfig {
@@ -34,12 +33,20 @@ struct DeviceConfig {
 };
 
 class OrielFirmware {
+  private:
+    char * network_ssid;
+    char * network_password;
+    char * opperating_wallet_address;
+    char * firmware_version = FIRMWARE_VERSION;
+    unsigned long latest_server_sync_timestamp_ms;
+    unsigned long latest_firmware_update_timestamp_ms;
   public:
-    DeviceConfig deviceConfig;
-    DeviceStates deviceState;
+    DeviceStates defaultDeviceState = IMAGE_CYCLING;
     DisplayController displayController;
+    FileController fileController;
 
     void initDevice();
+    void applyDeviceConfig(struct DeviceConfig *deviceConfig);
 };
 
 #endif /* _ORIEL_FIRMWARE_H_ */
