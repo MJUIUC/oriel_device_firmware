@@ -14,38 +14,30 @@
 #include <Arduino.h>
 #include <DisplayController.h>
 #include <FileController.h>
-
-#define DEVICE_VERSION 1
-#define FIRMWARE_VERSION "0.00a"
-
-enum DeviceStates {
-  IMAGE_CYCLING,
-  SERVER_SYNCING
-};
-
-struct DeviceConfig {
-  char * network_ssid;
-  char * network_password;
-  char * opperating_wallet_address;
-  char * firmware_version;
-  unsigned long latest_server_sync_timestamp_ms;
-  unsigned long latest_firmware_update_timestamp_ms;
-};
+#include <NetworkController.h>
+#include <Common.h>
 
 class OrielFirmware {
   private:
-    char * network_ssid;
-    char * network_password;
+    char * network_ssid = "Hide yo kids, Hide yo Wifi";
+    char * network_password = "Peachpanda33";
     char * opperating_wallet_address;
     char * firmware_version = FIRMWARE_VERSION;
     unsigned long latest_server_sync_timestamp_ms;
     unsigned long latest_firmware_update_timestamp_ms;
+
+    void beginSDCard();
+    void beginWiFiConnection();
+    void establishPowerState();
   public:
-    DeviceStates defaultDeviceState = IMAGE_CYCLING;
+    FirmwareState currentFirmwareState = IMAGE_CYCLING;
+    PowerState currentPowerState = BATTERY;
+    /* firmware controller classes */
     DisplayController displayController;
     FileController fileController;
+    NetworkController networkController;
 
-    void initDevice();
+    void initDeviceFirmware();
     void applyDeviceConfig(struct DeviceConfig *deviceConfig);
 };
 

@@ -14,6 +14,7 @@
 #include <Arduino.h>
 #include <Arduino_GFX_Library.h>
 #include <JpegClass.h>
+#include <Common.h>
 
 // #define JSON "json"
 // #define JPEG "jpeg"
@@ -26,18 +27,6 @@
 
 // #define ORIEL_CONFIG_FILENAME "/oriel_config.json"
 // #define IMAGE_FOLDER_NAME "/image_downloads"
-
-
-/**
- * DisplayTheme
- * ------------
- * General display properties for the device. Defines
- * the theme of the basic device UI.
- */
-struct DisplayTheme {
-  uint16_t background_color;
-  uint16_t text_color;
-};
 
 /**
  * Pin Configuration
@@ -62,7 +51,8 @@ class DisplayController {
     uint16_t display_text_color;
   public:
     DisplayTheme defaultTheme = { BLACK, GREEN };
-    void print(char * text); 
+    void print(char * text);
+    void printReturn();
     void initDisplay();
     void clearDisplay();
     void applyDisplayTheme(struct DisplayTheme *theme);

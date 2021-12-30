@@ -4,20 +4,16 @@
 #include <Arduino.h>
 #include <SD.h>
 #include <FS.h>
+#include <Common.h>
+#include <ArduinoJson.h>
 
 #define SD_CS 14
-
-enum FileControllerState {
-  OPEN,
-  CLOSED
-};
+#define JSON_FILE_BUFFER 512
 
 class FileController {
-  private:
-    void updateFileControllerState(FileControllerState state);
   public:
-    FileControllerState fileControllerState = CLOSED;
-    void initSDCard();
+    bool initSDCard();
+    DeviceConfig* parseDeviceConfigJson(char * device_config_filepath);
 };
 
 #endif /* _FILE_CONTROLLER_H_ */

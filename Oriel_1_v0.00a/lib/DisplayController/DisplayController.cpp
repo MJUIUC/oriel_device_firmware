@@ -1,5 +1,5 @@
 #include <DisplayController.h>
-#include <OrielFirmware.h>
+#include <Common.h>
 
 void DisplayController::initDisplay(){
   this->gfx->begin();
@@ -13,8 +13,14 @@ void DisplayController::print(char * text){
   this->gfx->print(text);
 }
 
+// Prints single blank return line.
+void DisplayController::printReturn(){
+  this->gfx->print("\n");
+}
+
 void DisplayController::clearDisplay(){
   this->gfx->fillScreen(this->display_background_color);
+  this->gfx->flush();
 }
 
 void DisplayController::applyDisplayTheme(struct DisplayTheme *theme){
