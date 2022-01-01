@@ -4,11 +4,13 @@
 #include <Arduino.h>
 #include <SD.h>
 #include <FS.h>
-#include <Common.h>
+#include <DeviceConfig.h>
+#include <HardwarePins.h>
 #include <ArduinoJson.h>
 
-#define SD_CS 14
 #define JSON_FILE_BUFFER 512
+
+#define DEVICE_CONFIG_FILEPATH "/.device_config.json"
 
 class FileController {
   public:

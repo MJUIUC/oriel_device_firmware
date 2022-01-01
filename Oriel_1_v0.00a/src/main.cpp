@@ -4,7 +4,7 @@
 OrielFirmware deviceFirmware;
 
 void setup() {
-  deviceFirmware.initDeviceFirmware();
+  deviceFirmware.beginFirmwareInitialization();
 }
 
 void loop() {

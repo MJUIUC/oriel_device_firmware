@@ -17,27 +17,30 @@ bool FileController::initSDCard(){
 
 DeviceConfig *FileController::parseDeviceConfigJson(char * device_config_filepath){
   File deviceConfigJson = SD.open(device_config_filepath, FILE_READ);
-  DynamicJsonDocument doc(deviceConfigJson.size() + JSON_FILE_BUFFER);
+  // file size doesn't matter I guess
+  DynamicJsonDocument doc(ESP.getMaxAllocHeap());
 
   String raw_json = "";
   while(deviceConfigJson.available()){
       String c = deviceConfigJson.readString();
       raw_json += c;
   }
-
+  // Serial.printf("Raw json: %s\n\n", raw_json.c_str());
   DeserializationError error = deserializeJson(doc, raw_json);
   if (error) {
     // TODO: Handle. Returning a null value for now
+    // Serial.printf("Config Parse Error: %s\n", error.c_str());
     return NULL;
   } else {
-    DeviceConfig n_config = {
-      (char *)doc["network_ssid"],
-      (char *)doc["network_password"],
-      (char *)doc["opperating_wallet_address"],
-      (char *)doc["firmware_version"],
-      (unsigned long) doc["latest_server_sync_timestamp_ms"],
-      (unsigned long) doc["latest_firmware_update_timestamp_ms"]
-    };
-    return &n_config;
+    Serial.printf("ssid from doc: %s\n\n\n", doc["network_ssid"].as<const char *>());
+    DeviceConfig *n_config = new DeviceConfig(
+      doc["network_ssid"].as<const char *>(),
+      doc["network_password"].as<const char *>(),
+      doc["opperating_wallet_address"].as<const char *>(),
+      doc["firmware_version"].as<const char *>(),
+      doc["latest_server_sync_timestamp_ms"].as<const char *>(),
+      doc["latest_firmware_update_timestamp_ms"].as<const char *>()
+    );
+    return n_config;
   }
 }

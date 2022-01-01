@@ -12,33 +12,45 @@
 #define ORIEL_FIRMWARE_h
 
 #include <Arduino.h>
-#include <DisplayController.h>
+#include <GraphicsController.h>
 #include <FileController.h>
 #include <NetworkController.h>
-#include <Common.h>
+#include <DeviceConfig.h>
+#include <HardwarePins.h>
+
+#define DEVICE_VERSION 1
+#define FIRMWARE_VERSION "0.00a"
+
 
 class OrielFirmware {
   private:
-    char * network_ssid = "Hide yo kids, Hide yo Wifi";
-    char * network_password = "Peachpanda33";
-    char * opperating_wallet_address;
-    char * firmware_version = FIRMWARE_VERSION;
-    unsigned long latest_server_sync_timestamp_ms;
-    unsigned long latest_firmware_update_timestamp_ms;
-
+    /* firmware initialization routines */
     void beginSDCard();
     void beginWiFiConnection();
-    void establishPowerState();
+    void initializeDeviceConfig();
+    bool isDevicePowerSufficientForWifi();
+  
   public:
+    DeviceConfig *deviceConfiguration;
     FirmwareState currentFirmwareState = IMAGE_CYCLING;
-    PowerState currentPowerState = BATTERY;
     /* firmware controller classes */
-    DisplayController displayController;
+    GraphicsController graphicsController;
     FileController fileController;
     NetworkController networkController;
 
-    void initDeviceFirmware();
-    void applyDeviceConfig(struct DeviceConfig *deviceConfig);
+    void beginFirmwareInitialization();
+    bool applyDeviceConfig();
+
+    PowerState getDevicePowerState(){
+      float vRead = (analogRead(VOLTAGE_CHECK_PIN) * 3.3) / 4095;
+      delay(500);
+      Serial.printf("vRead: %f\n", vRead);
+      if (vRead > 1.2) {
+        return PLUGIN;
+      } else {
+        return BATTERY;
+      }
+    };
 };
 
 #endif /* _ORIEL_FIRMWARE_H_ */
