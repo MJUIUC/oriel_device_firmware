@@ -12,15 +12,15 @@
 #define ORIEL_FIRMWARE_h
 
 #include <Arduino.h>
+
 #include <GraphicsController.h>
 #include <FileController.h>
 #include <NetworkController.h>
+
+#include <OrielServerSync.h>
+
 #include <DeviceConfig.h>
 #include <HardwarePins.h>
-
-#define DEVICE_VERSION 1
-#define FIRMWARE_VERSION "0.00a"
-
 
 class OrielFirmware {
   private:
@@ -38,7 +38,11 @@ class OrielFirmware {
     FileController fileController;
     NetworkController networkController;
 
+    /* Routine Classes */
+    OrielServerSync *serverSync;
+
     void beginFirmwareInitialization();
+    void beginOrielServerSync();
     bool applyDeviceConfig();
 
     PowerState getDevicePowerState(){

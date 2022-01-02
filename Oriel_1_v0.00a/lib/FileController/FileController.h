@@ -8,14 +8,27 @@
 #include <HardwarePins.h>
 #include <ArduinoJson.h>
 
-#define JSON_FILE_BUFFER 512
+#define DEVICE_CONFIG_FILE_PATH "/.device_config.json"
+#define ORIEL_CONFIG_FILE_PATH "/.oriel_config.json"
+#define DIGITAL_ASSETS_FOLDER_PATH "/digital_assets"
 
-#define DEVICE_CONFIG_FILEPATH "/.device_config.json"
+typedef enum {
+  JSON,
+  JPEG,
+  GIF,
+  PNG,
+} FileExtensionTypes;
 
 class FileController {
   public:
     bool initSDCard();
     DeviceConfig* parseDeviceConfigJson(char * device_config_filepath);
+    /**
+     * @brief Save Data String As File
+     * 
+     * Saves a strng of data as a file to the given path, with the given extension.
+     */
+    File *saveDataStringAsFile(const char * data, const char* path, FileExtensionTypes fileType);
 };
 
 #endif /* _FILE_CONTROLLER_H_ */

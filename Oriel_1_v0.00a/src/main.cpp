@@ -4,6 +4,7 @@
 OrielFirmware deviceFirmware;
 
 void setup() {
+  Serial.begin(115200);
   deviceFirmware.beginFirmwareInitialization();
 }
 

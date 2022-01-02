@@ -29,14 +29,14 @@ DeviceConfig *FileController::parseDeviceConfigJson(char * device_config_filepat
   DeserializationError error = deserializeJson(doc, raw_json);
   if (error) {
     // TODO: Handle. Returning a null value for now
-    // Serial.printf("Config Parse Error: %s\n", error.c_str());
+    Serial.printf("Config Parse Error: %s\n", error.c_str());
     return NULL;
   } else {
-    Serial.printf("ssid from doc: %s\n\n\n", doc["network_ssid"].as<const char *>());
     DeviceConfig *n_config = new DeviceConfig(
       doc["network_ssid"].as<const char *>(),
       doc["network_password"].as<const char *>(),
       doc["opperating_wallet_address"].as<const char *>(),
+      doc["oriel_device_id"].as<const char *>(),
       doc["firmware_version"].as<const char *>(),
       doc["latest_server_sync_timestamp_ms"].as<const char *>(),
       doc["latest_firmware_update_timestamp_ms"].as<const char *>()

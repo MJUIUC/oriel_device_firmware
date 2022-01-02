@@ -25,9 +25,6 @@
 
 // #define JSON_FILE_BUFFER 1024
 
-// #define ORIEL_CONFIG_FILENAME "/oriel_config.json"
-// #define IMAGE_FOLDER_NAME "/image_downloads"
-
 class GraphicsController {
   private:
     static JpegClass jpegClass;

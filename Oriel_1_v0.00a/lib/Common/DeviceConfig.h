@@ -3,6 +3,10 @@
 
 #include <Arduino.h>
 
+#define DEVICE_NAME "MIRA"
+#define DEVICE_VERSION 1.0
+#define FIRMWARE_VERSION "0.00a"
+
 enum FirmwareState
 {
   IMAGE_CYCLING,
@@ -35,18 +39,18 @@ public:
       const char *network_ssid,
       const char *network_password,
       const char *opperating_wallet_address,
+      const char *oriel_device_id,
       const char *firmware_version,
       const char *latest_server_sync_timestamp_ms,
       const char *latest_firmware_update_timestamp_ms);
 
   const char *network_ssid;
   const char *network_password;
+  const char *oriel_device_id;
   const char *opperating_wallet_address;
   const char *firmware_version;
   const char *latest_server_sync_timestamp_ms;
   const char *latest_firmware_update_timestamp_ms;
-
-  DeviceConfig* createDeepCopy();
 
   void printSelfToSerial();
 };
