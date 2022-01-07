@@ -17,7 +17,7 @@
 #include <FileController.h>
 #include <NetworkController.h>
 
-#include <OrielServerSync.h>
+#include <OrielOutBoundServerSync.h>
 
 #include <DeviceConfig.h>
 #include <HardwarePins.h>
@@ -26,12 +26,12 @@ class OrielFirmware {
   private:
     /* firmware initialization routines */
     void beginSDCard();
-    void beginWiFiConnection();
+    void beginWiFiConnection(const char * ssid, const char * password);
     void initializeDeviceConfig();
+    bool wifiCredentialsExist();
     bool isDevicePowerSufficientForWifi();
   
   public:
-    DeviceConfig *deviceConfiguration;
     FirmwareState currentFirmwareState = IMAGE_CYCLING;
     /* firmware controller classes */
     GraphicsController graphicsController;
@@ -39,7 +39,7 @@ class OrielFirmware {
     NetworkController networkController;
 
     /* Routine Classes */
-    OrielServerSync *serverSync;
+    OrielOutBoundServerSync *serverSync;
 
     void beginFirmwareInitialization();
     void beginOrielServerSync();

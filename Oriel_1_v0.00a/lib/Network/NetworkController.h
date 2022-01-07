@@ -50,7 +50,7 @@ class NetworkController {
     WiFiClient wifiClient;
     wl_status_t network_connection_status = WL_DISCONNECTED;
     wl_status_t getAndSetConnectionStatus();
-    bool initWiFi(const char * ssid, const char * password);
+    bool initWiFi(const char * ssid, const char * password, wifi_mode_t mode);
     void dissableWiFi();
 
     const char * getUserAgent();

@@ -45,12 +45,12 @@ const char *NetworkController::makeServerRequest(const char *url, RequestOptions
 }
 
 /* HARDWARE FUNCTIONS */
-bool NetworkController::initWiFi(const char *ssid, const char *password)
+bool NetworkController::initWiFi(const char *ssid, const char *password, wifi_mode_t mode)
 {
   int seconds = this->wireless_network_connection_timeout;
   Serial.printf("ssid: %s\n", ssid);
   Serial.printf("password: %s\n", password);
-  WiFi.mode(WIFI_STA);
+  WiFi.mode(mode);
   WiFi.begin(ssid, password);
   Serial.print("Connecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED)

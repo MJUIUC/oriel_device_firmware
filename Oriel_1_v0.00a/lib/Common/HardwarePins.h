@@ -4,6 +4,8 @@
 #define VOLTAGE_CHECK_PIN 27
 
 #define SD_CS 14
+#define RIGHT_BUTTON_PIN
+#define LEFT_BUTTON_PIN
 
 /**
  * TFT DISPLAY Pin Configuration

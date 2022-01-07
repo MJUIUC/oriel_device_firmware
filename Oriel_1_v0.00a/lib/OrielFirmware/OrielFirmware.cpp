@@ -17,20 +17,22 @@ void OrielFirmware::beginFirmwareInitialization()
   delay(1500);
   this->graphicsController.clearDisplay();
   this->graphicsController.Display->print("Initializing Device Firmware\n\n");
-  this->beginSDCard();
-  this->initializeDeviceConfig();
-  this->serverSync = new OrielServerSync(this->deviceConfiguration, &this->fileController, &this->networkController);
+  bool spiffsInitialized = this->fileController.initSPIFFS();
+  WiFiCredentials *wifiCredentials = this->fileController.parseWiFiJson(WIFI_JSON_FILE_PATH);
   if (this->isDevicePowerSufficientForWifi()) {
-    this->beginWiFiConnection();
-    // call sync routine class
-    this->beginOrielServerSync();
+    
+    // does the device have wifi credentials?
+    if(wifiCredentials){
+      // start oriel config sync
+      this->beginWiFiConnection(wifiCredentials->wifi_network_ssid, wifiCredentials->wifi_netowrk_password);
+    } else {
+      // start web server and wait for them. then restart device.
+      
+    }
   }
 }
 
-/**
- * @brief Begin SD Card
- * 
- */
+
 void OrielFirmware::beginSDCard()
 {
   this->graphicsController.Display->print("sd: ");
@@ -63,14 +65,14 @@ void OrielFirmware::initializeDeviceConfig()
  * 
  * Enables the devices' WiFi hardware.
  */
-void OrielFirmware::beginWiFiConnection()
+void OrielFirmware::beginWiFiConnection(const char * ssid, const char * password)
 {
   this->graphicsController.Display->print("WiFi: ");
-  if (this->networkController.initWiFi(this->deviceConfiguration->network_ssid, this->deviceConfiguration->network_password))
+  if (this->networkController.initWiFi(ssid, password, WIFI_STA))
   {
     this->graphicsController.Display->print("connection established.\n\n");
     this->graphicsController.Display->print("@: ");
-    this->graphicsController.Display->printf("%s\n\n", this->deviceConfiguration->network_ssid);
+    this->graphicsController.Display->printf("%s\n\n", ssid);
     return;
   }
   this->graphicsController.Display->print("Failed.\n");
@@ -94,26 +96,6 @@ void OrielFirmware::beginOrielServerSync(){
 
   } else {
     this->graphicsController.Display->print("no\n");
-  }
-}
-
-/**
- * @brief Apply Device Config
- *
- * Applies a DeviceConfig struct to Oriel Firmware
- * Main Settings.
- */
-bool OrielFirmware::applyDeviceConfig()
-{
-  DeviceConfig *d_c = this->fileController.parseDeviceConfigJson((char *)DEVICE_CONFIG_FILE_PATH);
-  if (d_c == NULL)
-  {
-    return false;
-  }
-  else
-  {
-    this->deviceConfiguration = d_c;
-    return true;
   }
 }
 
