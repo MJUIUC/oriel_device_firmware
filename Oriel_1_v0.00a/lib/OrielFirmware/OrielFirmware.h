@@ -15,7 +15,7 @@
 
 #include <GraphicsController.h>
 #include <FileController.h>
-#include <NetworkController.h>
+#include <OrielServerClientController.h>
 
 #include <OrielOutBoundServerSync.h>
 
@@ -36,9 +36,9 @@ class OrielFirmware {
     /* firmware controller classes */
     GraphicsController graphicsController;
     FileController fileController;
-    NetworkController networkController;
+    OrielServerClientController orielServerClientController;
 
-    /* Routine Classes */
+    /* Routine Classes, constructed after sd detected */
     OrielOutBoundServerSync *serverSync;
 
     void beginFirmwareInitialization();

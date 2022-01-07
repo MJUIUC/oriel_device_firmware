@@ -3,21 +3,19 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <NetworkController.h>
+#include <OrielServerClientController.h>
 #include <DeviceConfig.h>
 #include <WalletDefinitions.h>
 #include <FileController.h>
 
 class OrielOutBoundServerSync {
   private:
-    NetworkController *networkController;
+    OrielServerClientController *orielServerClientController;
     FileController *fileController;
     OrielConfig *orielConfig;
-    const char * oriel_server_hostname = "192.168.1.239";
-    uint16_t oriel_server_portnumber = 8080;
   public:
     OrielOutBoundServerSync();
-    OrielOutBoundServerSync(OrielConfig *orielConfig, FileController *file_controller, NetworkController *network_controller);
+    OrielOutBoundServerSync(OrielConfig *orielConfig, FileController *fileController, OrielServerClientController *orielServerClientController);
     void requestOrielConfigJson();
     bool *requestShouldSyncBool();
 };

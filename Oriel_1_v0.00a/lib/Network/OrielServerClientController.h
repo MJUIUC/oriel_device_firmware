@@ -1,5 +1,5 @@
-#ifndef NETWORK_CONTROLLER_h
-#define NETWORK_CONTROLLER_h
+#ifndef ORIEL_SERVER_CLIENT_CONTROLLER_h
+#define ORIEL_SERVER_CLIENT_CONTROLLER_h
 
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -43,15 +43,21 @@ class RequestOptions {
     }
 };
 
-class NetworkController {
+class OrielServerClientController {
   private:
     int wireless_network_connection_timeout = 5;
   public:
     WiFiClient wifiClient;
     wl_status_t network_connection_status = WL_DISCONNECTED;
     wl_status_t getAndSetConnectionStatus();
-    bool initWiFi(const char * ssid, const char * password, wifi_mode_t mode);
-    void dissableWiFi();
+    // TODO: these might belong in orile config, or wifi config
+    const char * oriel_server_hostname = "192.168.1.239";
+    uint16_t oriel_server_portnumber = 8080;
+
+    IPAddress *connected_ip = new IPAddress;
+    
+    bool initWiFiStationMode(const char * ssid, const char * password);
+    bool dissableWiFiStationMode();
 
     const char * getUserAgent();
     /**
@@ -69,4 +75,4 @@ class NetworkController {
     File *makeServerRequest(const char * url, const char * downlaod_path, RequestOptions *options);
 };
 
-#endif /* _NETWORK_CONTROLLER_H_ */
+#endif /* _ORIEL_SERVER_CLIENT_CONTROLLER_H_ */

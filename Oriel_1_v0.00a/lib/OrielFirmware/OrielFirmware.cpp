@@ -25,8 +25,9 @@ void OrielFirmware::beginFirmwareInitialization()
     if(wifiCredentials){
       // start oriel config sync
       this->beginWiFiConnection(wifiCredentials->wifi_network_ssid, wifiCredentials->wifi_netowrk_password);
+      if(!this->serverSync->requestShouldSyncBool()) return; /* if no sync needed, leave setup */
     } else {
-      // start web server and wait for them. then restart device.
+      // start web server and wait for user to save input. then restart device.
       
     }
   }
@@ -68,7 +69,7 @@ void OrielFirmware::initializeDeviceConfig()
 void OrielFirmware::beginWiFiConnection(const char * ssid, const char * password)
 {
   this->graphicsController.Display->print("WiFi: ");
-  if (this->networkController.initWiFi(ssid, password, WIFI_STA))
+  if (this->orielServerClientController.initWiFiStationMode(ssid, password))
   {
     this->graphicsController.Display->print("connection established.\n\n");
     this->graphicsController.Display->print("@: ");

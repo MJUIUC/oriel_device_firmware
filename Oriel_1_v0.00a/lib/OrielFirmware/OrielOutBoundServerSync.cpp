@@ -1,24 +1,24 @@
 #include <OrielOutBoundServerSync.h>
 
 OrielOutBoundServerSync::OrielOutBoundServerSync(){};
-OrielOutBoundServerSync::OrielOutBoundServerSync(OrielConfig *orielConfig, FileController *file_controller, NetworkController *network_controller)
+OrielOutBoundServerSync::OrielOutBoundServerSync(OrielConfig *orielConfig, FileController *fileController, OrielServerClientController *orielServerClient)
 {
   this->orielConfig = orielConfig;
-  this->fileController = file_controller;
-  this->networkController = network_controller;
+  this->fileController = fileController;
+  this->orielServerClientController = orielServerClient;
 };
 
 bool *OrielOutBoundServerSync::requestShouldSyncBool()
 {
-  String user_agent_string = (String)this->networkController->getUserAgent();
+  String user_agent_string = (String)this->orielServerClientController->getUserAgent();
   RequestOptions requestOptions = RequestOptions(
-      GET, false, this->oriel_server_hostname,
-      this->oriel_server_portnumber, user_agent_string.c_str(),
+      GET, false, this->orielServerClientController->oriel_server_hostname,
+      this->orielServerClientController->oriel_server_portnumber, user_agent_string.c_str(),
       "close");
 
   String url = "/device/sync_ready.json?wallet_address=" + (String)this->orielConfig->opperating_wallet_address +
                 "&device_id=" + (String)this->orielConfig->oriel_device_id;
-  const char *server_response_body = this->networkController->makeServerRequest(url.c_str(), &requestOptions);
+  const char *server_response_body = this->orielServerClientController->makeServerRequest(url.c_str(), &requestOptions);
   if (!server_response_body)
   {
     String error_msg = requestOptions.request_method_string + ": " + (String)url + " Failed!";
@@ -43,16 +43,16 @@ bool *OrielOutBoundServerSync::requestShouldSyncBool()
 
 void OrielOutBoundServerSync::requestOrielConfigJson() {
   // TODO: Request oriel_config json and downlaod it to a file.
-  String user_agent_string = (String)this->networkController->getUserAgent();
+  String user_agent_string = (String)this->orielServerClientController->getUserAgent();
   RequestOptions requestOptions = RequestOptions(
-      GET, false, this->oriel_server_hostname,
-      this->oriel_server_portnumber, user_agent_string.c_str(),
+      GET, false, this->orielServerClientController->oriel_server_hostname,
+      this->orielServerClientController->oriel_server_portnumber, user_agent_string.c_str(),
       "close");
   
   String url = "/device/oriel_config.json?wallet_address=" + (String)this->orielConfig->opperating_wallet_address +
                 "&device_id=" + (String)this->orielConfig->oriel_device_id;
   
-  const char *server_response_body = this->networkController->makeServerRequest(url.c_str(), &requestOptions);
+  const char *server_response_body = this->orielServerClientController->makeServerRequest(url.c_str(), &requestOptions);
   Serial.printf("oriel_config.json: %s\n", server_response_body);
   // File *oriel_config_json_file = this->fileController->parseOrielConfigJson(ORIEL_CONFIG_FILE_PATH);
   
