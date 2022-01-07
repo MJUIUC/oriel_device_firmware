@@ -5,7 +5,7 @@ void GraphicsController::initDisplay(){
   this->Display->begin();
   this->Display->invertDisplay(1);
   this->applyDisplayTheme(&this->defaultTheme);
-  this->Display->printf("Oriel Mira %i\n", DEVICE_VERSION);
+  this->Display->printf("Oriel Mira %d\n", DEVICE_VERSION);
   this->Display->printf("Firmware Version %s\n", FIRMWARE_VERSION);
 }
 

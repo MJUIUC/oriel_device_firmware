@@ -19,7 +19,7 @@ void OrielFirmware::beginFirmwareInitialization()
   this->graphicsController.Display->print("Initializing Device Firmware\n\n");
   this->beginSDCard();
   this->initializeDeviceConfig();
-  this->serverSync = new OrielServerSync(this->deviceConfiguration);
+  this->serverSync = new OrielServerSync(this->deviceConfiguration, &this->fileController, &this->networkController);
   if (this->isDevicePowerSufficientForWifi()) {
     this->beginWiFiConnection();
     // call sync routine class

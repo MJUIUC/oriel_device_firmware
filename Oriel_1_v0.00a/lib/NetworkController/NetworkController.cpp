@@ -2,8 +2,9 @@
 
 const char *NetworkController::getUserAgent()
 {
-  String u_a = (String)"Oriel_" + (String)DEVICE_NAME + (String)"/firmware_version: " + (String)FRIMWARE_VERSION + (String)"(ESP32; Espressif framework)";
-  return u_a.c_str();
+  String *u_a = new String((String)"Oriel_" + (String)DEVICE_NAME + (String)"/firmware_version: " + (String)FIRMWARE_VERSION + (String)"(ESP32; Espressif framework)");
+  const char *tmp = u_a->c_str();
+  return tmp;
 }
 
 /* SEVER REQUEST FUNCTIONS */
