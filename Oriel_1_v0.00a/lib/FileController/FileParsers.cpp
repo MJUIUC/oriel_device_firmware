@@ -1,6 +1,6 @@
 #include <FileController.h>
 
-WiFiCredentials *FileController::parseWiFiJson(char * wifi_json_filepath){
+WiFiCredentials *FileController::parseWiFiJsonFromSpiffs(char * wifi_json_filepath){
   if (!SPIFFS.exists(WIFI_JSON_FILE_PATH)) {
     return NULL;
   } else {

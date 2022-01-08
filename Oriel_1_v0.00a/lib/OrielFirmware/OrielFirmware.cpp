@@ -18,7 +18,8 @@ void OrielFirmware::beginFirmwareInitialization()
   this->graphicsController.clearDisplay();
   this->graphicsController.Display->print("Initializing Device Firmware\n\n");
   bool spiffsInitialized = this->fileController.initSPIFFS();
-  WiFiCredentials *wifiCredentials = this->fileController.parseWiFiJson(WIFI_JSON_FILE_PATH);
+  this->graphicsController.Display->printf("spiffs initialized: %s\n", spiffsInitialized? "true" : "false");
+  WiFiCredentials *wifiCredentials = this->fileController.parseWiFiJsonFromSpiffs(WIFI_JSON_FILE_PATH);
   if (this->isDevicePowerSufficientForWifi()) {
     
     // does the device have wifi credentials?
@@ -28,7 +29,16 @@ void OrielFirmware::beginFirmwareInitialization()
       if(!this->serverSync->requestShouldSyncBool()) return; /* if no sync needed, leave setup */
     } else {
       // start web server and wait for user to save input. then restart device.
-      
+      if (internalWebServer.initWiFiApMode()) {
+        this->graphicsController.clearDisplay();
+        this->graphicsController.Display->printf("starting internal server\n\n");
+        this->internalWebServer.startInternalWebService();
+        this->graphicsController.Display->printf("device_ssid: %s\n", this->internalWebServer.device_ssid);
+        this->graphicsController.Display->printf("device_password: %s\n\n", this->internalWebServer.device_password);
+        this->graphicsController.Display->printf("navigate to the following\n");
+        this->graphicsController.Display->printf("ip: %s", this->internalWebServer.softAPIP.toString().c_str());
+        this->internalWebServerActive = true;
+      }
     }
   }
 }

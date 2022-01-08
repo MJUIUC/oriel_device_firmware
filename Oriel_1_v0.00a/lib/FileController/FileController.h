@@ -28,7 +28,7 @@ class FileController {
     bool initSDCard();
     bool initSPIFFS();
     OrielConfig* parseOrielConfigJson(char * oriel_config_filepath);
-    WiFiCredentials* parseWiFiJson(char * wifi_json_filepath);
+    WiFiCredentials* parseWiFiJsonFromSpiffs(char * wifi_json_filepath);
     /**
      * @brief Save Data String As File
      * 

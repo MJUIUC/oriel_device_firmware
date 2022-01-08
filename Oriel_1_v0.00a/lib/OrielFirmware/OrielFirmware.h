@@ -12,13 +12,11 @@
 #define ORIEL_FIRMWARE_h
 
 #include <Arduino.h>
-
 #include <GraphicsController.h>
 #include <FileController.h>
 #include <OrielServerClientController.h>
-
 #include <OrielOutBoundServerSync.h>
-
+#include <InternalWebServer.h>
 #include <DeviceConfig.h>
 #include <HardwarePins.h>
 
@@ -37,9 +35,12 @@ class OrielFirmware {
     GraphicsController graphicsController;
     FileController fileController;
     OrielServerClientController orielServerClientController;
+    InternalWebServer internalWebServer;
 
     /* Routine Classes, constructed after sd detected */
     OrielOutBoundServerSync *serverSync;
+
+    bool internalWebServerActive = false;
 
     void beginFirmwareInitialization();
     void beginOrielServerSync();
