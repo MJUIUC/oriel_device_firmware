@@ -7,21 +7,22 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 
-class InternalWebServer {
-  public:
-    AsyncWebServer *webServer = new AsyncWebServer(80);
+class InternalWebServer
+{
+public:
+  AsyncWebServer *webServer = new AsyncWebServer(80);
 
-    const char * device_ssid = "Oriel Mira 1";
-    const char * device_password = "orielmira";
+  const char *device_ssid = "Oriel Mira 1";
+  const char *device_password = "orielmira";
 
-    IPAddress softAPIP;
+  IPAddress softAPIP;
 
-    bool checkHardwareFree();
-    bool initWiFiApMode();
+  bool checkHardwareFree();
+  bool initWiFiApMode();
 
-    static void notFound(AsyncWebServerRequest *request);
+  static void notFound(AsyncWebServerRequest *request);
 
-    void startInternalWebService();
+  void startInternalWebService();
 };
 
 #endif /* _INTERNAL_WEB_SERVER_H_ */

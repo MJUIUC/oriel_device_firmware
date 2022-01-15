@@ -22,6 +22,7 @@ void InternalWebServer::notFound(AsyncWebServerRequest *request){
 
 void InternalWebServer::startInternalWebService(){
   if (this->initWiFiApMode()) {
+    
     this->webServer->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
       request->send(SPIFFS, "/index.html");
     });
@@ -33,6 +34,23 @@ void InternalWebServer::startInternalWebService(){
     this->webServer->on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
       request->send(SPIFFS, "/styles.css");
     });
+
+    this->webServer->on(
+      "/update_wifi_credentials",
+      HTTP_POST,
+      [](AsyncWebServerRequest *request){},
+      NULL,
+      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){ 
+        String incoming_data_stirng = "";
+        for (size_t i = 0; i < len; i++){
+          incoming_data_stirng += (char)data[i];
+        }
+
+        
+
+        Serial.printf("request body: %s\n\n", incoming_data_stirng.c_str());
+        request->send(200);
+      });
 
     this->webServer->onNotFound(this->notFound);
     this->webServer->begin();
