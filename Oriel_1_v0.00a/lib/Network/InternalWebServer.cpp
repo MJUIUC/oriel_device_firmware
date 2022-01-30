@@ -35,24 +35,48 @@ void InternalWebServer::startInternalWebService(){
       request->send(SPIFFS, "/styles.css");
     });
 
+    this->webServer->on("/device_information.json", HTTP_GET, [this](AsyncWebServerRequest *request){
+      
+    });
+
     this->webServer->on(
       "/update_wifi_credentials",
       HTTP_POST,
       [](AsyncWebServerRequest *request){},
       NULL,
-      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){ 
-        String incoming_data_stirng = "";
+      [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){ 
+        String* incoming_data_stirng = new String("");
         for (size_t i = 0; i < len; i++){
-          incoming_data_stirng += (char)data[i];
+          *incoming_data_stirng += (char)data[i];
         }
 
+        DynamicJsonDocument doc(ESP.getMaxAllocHeap());
+        DeserializationError error = deserializeJson(doc, *incoming_data_stirng);
         
-
-        Serial.printf("request body: %s\n\n", incoming_data_stirng.c_str());
-        request->send(200);
+        if (error) {
+          String message = "internal web server error: " + (String)error.c_str();
+          Serial.printf("internal web server error: %s\n", error.c_str());
+          request->send(400, "text/json", message);
+        } else {
+          const char *potential_ssid = doc["network_ssid"].as<const char *>();
+          const char *potential_password = doc["network_password"].as<const char *>();
+          Serial.printf("request body: %s\n\n", incoming_data_stirng->c_str());  
+          this->potentialWifiCredentials = new WiFiCredentials(potential_ssid, potential_password, incoming_data_stirng->c_str());
+          request->send(200, "text", (String)"Updating new credentials. Please close this window.");
+        }
       });
 
     this->webServer->onNotFound(this->notFound);
     this->webServer->begin();
+    this->internalWebServerActive = true;
   }
+}
+
+void InternalWebServer::killInternalWebService(){
+  this->internalWebServerActive = false;
+  this->webServer->end();
+}
+
+void InternalWebServer::stopWifiHardware(){
+  WiFi.mode(WIFI_MODE_NULL);
 }

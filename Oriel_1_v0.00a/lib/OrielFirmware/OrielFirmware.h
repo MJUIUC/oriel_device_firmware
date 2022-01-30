@@ -24,7 +24,7 @@ class OrielFirmware {
   private:
     /* firmware initialization routines */
     void beginSDCard();
-    void beginWiFiConnection(const char * ssid, const char * password);
+    bool beginAccessPointConnection(const char * ssid, const char * password);
     void initializeDeviceConfig();
     bool wifiCredentialsExist();
     bool isDevicePowerSufficientForWifi();
@@ -39,8 +39,6 @@ class OrielFirmware {
 
     /* Routine Classes, constructed after sd detected */
     OrielOutBoundServerSync *serverSync;
-
-    bool internalWebServerActive = false;
 
     void beginFirmwareInitialization();
     void beginOrielServerSync();

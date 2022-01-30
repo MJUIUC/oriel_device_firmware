@@ -25,10 +25,12 @@ typedef enum {
 
 class FileController {
   public:
+    WiFiCredentials* parseWiFiJsonFromSpiffs(char * wifi_json_filepath);
+    OrielConfig* parseOrielConfigJson(char * oriel_config_filepath);
     bool initSDCard();
     bool initSPIFFS();
-    OrielConfig* parseOrielConfigJson(char * oriel_config_filepath);
-    WiFiCredentials* parseWiFiJsonFromSpiffs(char * wifi_json_filepath);
+    // returns false if it failed to write a file
+    bool writeWifiCredentialsToSPIFFS(WiFiCredentials *wifiCredentials);
     /**
      * @brief Save Data String As File
      * 
@@ -37,7 +39,7 @@ class FileController {
      */
     File *saveDataStringAsFile(const char * data, const char* path);
 
-    String transposeFileExtensionType(FileExtensionTypes extension){
+    String fileExtensionTypeToString(FileExtensionTypes extension){
       switch(extension){
         case JSON: return ".json";
         case JPEG: return ".jpeg";
