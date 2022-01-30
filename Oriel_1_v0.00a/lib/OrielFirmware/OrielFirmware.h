@@ -12,13 +12,11 @@
 #define ORIEL_FIRMWARE_h
 
 #include <Arduino.h>
-
 #include <GraphicsController.h>
 #include <FileController.h>
-#include <NetworkController.h>
-
-#include <OrielServerSync.h>
-
+#include <OrielServerClientController.h>
+#include <OrielOutBoundServerSync.h>
+#include <InternalWebServer.h>
 #include <DeviceConfig.h>
 #include <HardwarePins.h>
 
@@ -26,20 +24,21 @@ class OrielFirmware {
   private:
     /* firmware initialization routines */
     void beginSDCard();
-    void beginWiFiConnection();
+    bool beginAccessPointConnection(const char * ssid, const char * password);
     void initializeDeviceConfig();
+    bool wifiCredentialsExist();
     bool isDevicePowerSufficientForWifi();
   
   public:
-    DeviceConfig *deviceConfiguration;
     FirmwareState currentFirmwareState = IMAGE_CYCLING;
     /* firmware controller classes */
     GraphicsController graphicsController;
     FileController fileController;
-    NetworkController networkController;
+    OrielServerClientController orielServerClientController;
+    InternalWebServer internalWebServer;
 
-    /* Routine Classes */
-    OrielServerSync *serverSync;
+    /* Routine Classes, constructed after sd detected */
+    OrielOutBoundServerSync *serverSync;
 
     void beginFirmwareInitialization();
     void beginOrielServerSync();

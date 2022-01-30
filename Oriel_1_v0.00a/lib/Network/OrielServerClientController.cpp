@@ -1,6 +1,6 @@
-#include <NetworkController.h>
+#include <OrielServerClientController.h>
 
-const char *NetworkController::getUserAgent()
+const char *OrielServerClientController::getUserAgent()
 {
   String *u_a = new String((String)"Oriel_" + (String)DEVICE_NAME + (String)"/firmware_version: " + (String)FIRMWARE_VERSION + (String)"(ESP32; Espressif framework)");
   const char *tmp = u_a->c_str();
@@ -8,7 +8,7 @@ const char *NetworkController::getUserAgent()
 }
 
 /* SEVER REQUEST FUNCTIONS */
-const char *NetworkController::makeServerRequest(const char *url, RequestOptions *options)
+const char *OrielServerClientController::makeServerRequest(const char *url, RequestOptions *options)
 {
   if (wifiClient.connect(options->host_server_name, options->host_server_port))
   {
@@ -45,12 +45,12 @@ const char *NetworkController::makeServerRequest(const char *url, RequestOptions
 }
 
 /* HARDWARE FUNCTIONS */
-bool NetworkController::initWiFi(const char *ssid, const char *password)
+bool OrielServerClientController::initWiFiStationMode(const char *ssid, const char *password)
 {
   int seconds = this->wireless_network_connection_timeout;
   Serial.printf("ssid: %s\n", ssid);
   Serial.printf("password: %s\n", password);
-  WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_MODE_STA);
   WiFi.begin(ssid, password);
   Serial.print("Connecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED)
@@ -63,17 +63,19 @@ bool NetworkController::initWiFi(const char *ssid, const char *password)
     seconds--;
     delay(1000);
   }
+  *this->connected_ip = WiFi.localIP();
   Serial.println(WiFi.localIP());
   return true;
 }
 
-wl_status_t NetworkController::getAndSetConnectionStatus()
+wl_status_t OrielServerClientController::getAndSetConnectionStatus()
 {
   this->network_connection_status = WiFi.status();
   return this->network_connection_status;
 }
 
-void NetworkController::dissableWiFi()
+bool OrielServerClientController::dissableWiFiStationMode()
 {
-  WiFi.disconnect();
+  delete this->connected_ip;
+  return WiFi.disconnect();
 }

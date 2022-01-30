@@ -2,15 +2,17 @@
 #define FILE_CONTROLLER_h
 
 #include <Arduino.h>
+#include <SPIFFS.h>
 #include <SD.h>
 #include <FS.h>
-#include <DeviceConfig.h>
+#include <WiFiCredentials.h>
 #include <OrielConfig.h>
 #include <HardwarePins.h>
 #include <ArduinoJson.h>
 
 #define DEVICE_CONFIG_FILE_PATH "/.device_config.json"
 #define ORIEL_CONFIG_FILE_PATH "/.oriel_config.json"
+#define WIFI_JSON_FILE_PATH "/wifi.json"
 #define DIGITAL_ASSETS_FOLDER_PATH "/digital_assets"
 
 typedef enum {
@@ -23,9 +25,12 @@ typedef enum {
 
 class FileController {
   public:
-    bool initSDCard();
-    DeviceConfig* parseDeviceConfigJson(char * device_config_filepath);
+    WiFiCredentials* parseWiFiJsonFromSpiffs(char * wifi_json_filepath);
     OrielConfig* parseOrielConfigJson(char * oriel_config_filepath);
+    bool initSDCard();
+    bool initSPIFFS();
+    // returns false if it failed to write a file
+    bool writeWifiCredentialsToSPIFFS(WiFiCredentials *wifiCredentials);
     /**
      * @brief Save Data String As File
      * 
@@ -34,7 +39,7 @@ class FileController {
      */
     File *saveDataStringAsFile(const char * data, const char* path);
 
-    String transposeFileExtensionType(FileExtensionTypes extension){
+    String fileExtensionTypeToString(FileExtensionTypes extension){
       switch(extension){
         case JSON: return ".json";
         case JPEG: return ".jpeg";

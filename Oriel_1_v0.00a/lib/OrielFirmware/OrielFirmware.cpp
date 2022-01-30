@@ -1,6 +1,6 @@
 #include <OrielFirmware.h>
 
-/* !!! BEGIN DEVICE INITIALIZATION FUNCTIONS !!! */
+/* !!! BEGIN MAIN FIRMWARE INIT FUNCTION !!! */
 
 /**
  * @brief Initialize Device Firmware
@@ -17,20 +17,77 @@ void OrielFirmware::beginFirmwareInitialization()
   delay(1500);
   this->graphicsController.clearDisplay();
   this->graphicsController.Display->print("Initializing Device Firmware\n\n");
-  this->beginSDCard();
-  this->initializeDeviceConfig();
-  this->serverSync = new OrielServerSync(this->deviceConfiguration, &this->fileController, &this->networkController);
+  bool spiffsInitialized = this->fileController.initSPIFFS();
+  this->graphicsController.Display->printf("spiffs initialized: %s\n", spiffsInitialized? "true" : "false");
+  WiFiCredentials *wifiCredentials = this->fileController.parseWiFiJsonFromSpiffs(WIFI_JSON_FILE_PATH);
   if (this->isDevicePowerSufficientForWifi()) {
-    this->beginWiFiConnection();
-    // call sync routine class
-    this->beginOrielServerSync();
+    
+    // does the device have wifi credentials?
+    if(wifiCredentials){
+      // try to establish a connection with given config
+      this->graphicsController.Display->print("network credentials found\n");
+      this->graphicsController.Display->print("establishing connection...\n");
+      if (this->beginAccessPointConnection(wifiCredentials->wifi_network_ssid, wifiCredentials->wifi_network_password)) {
+        // attempt to start sync with server
+        // if(!this->serverSync->requestShouldSyncBool()) return; /* if no sync needed, leave setup */
+        // return on sync routine end
+        return;
+      } else {
+        // This should be a choice if there's aready content present on device
+        this->graphicsController.Display->print("failed establishing netowrk connection\n");
+        delay(1000);
+      }
+    }
+    // If there are no network credentials, or we couldn't stablish connection, run the internal server.
+    if (internalWebServer.initWiFiApMode()) {
+      this->graphicsController.clearDisplay();
+      this->graphicsController.Display->printf("starting internal server\n\n");
+      this->internalWebServer.startInternalWebService();
+      this->graphicsController.Display->printf("device_ssid: %s\n", this->internalWebServer.device_ssid);
+      this->graphicsController.Display->printf("device_password: %s\n\n", this->internalWebServer.device_password);
+      this->graphicsController.Display->printf("navigate to the following\n");
+      this->graphicsController.Display->printf("ip: %s\n", this->internalWebServer.softAPIP.toString().c_str());
+      
+      // While the server is active, listen for changes in the firmware
+      while(this->internalWebServer.internalWebServerActive) {
+        // Potential wifi credentials recieved by client. Set and restart device
+        if (this->internalWebServer.potentialWifiCredentials){
+          this->graphicsController.clearDisplay();
+          this->graphicsController.Display->setCursor(0, 0);
+          this->graphicsController.Display->print("Recieved Wifi Credentials\n\n");
+          this->graphicsController.Display->printf("ssid: %s\n", this->internalWebServer.potentialWifiCredentials->wifi_network_ssid);
+          this->graphicsController.Display->printf("password: %s\n\n", this->internalWebServer.potentialWifiCredentials->wifi_network_password);
+          delay(200);
+          this->internalWebServer.killInternalWebService();
+          this->internalWebServer.stopWifiHardware();
+          this->graphicsController.Display->print("Saving credentials...\n");
+          if(this->fileController.writeWifiCredentialsToSPIFFS(this->internalWebServer.potentialWifiCredentials)){
+            this->graphicsController.Display->print("credentials updated successfully...\n");
+          } else {
+            this->graphicsController.Display->print("failed to write credentials...\n");
+          }
+
+          this->graphicsController.Display->print("restarting device in: ");
+          int cursor_x = this->graphicsController.Display->getCursorX();
+          int cursor_y = this->graphicsController.Display->getCursorY();
+          int seconds = 10;
+          while (seconds > 0) {
+            this->graphicsController.Display->writeFillRect(cursor_x, cursor_y, cursor_x + 5, 1, this->graphicsController.defaultTheme.background_color);
+            this->graphicsController.Display->setCursor(cursor_x, cursor_y);
+            this->graphicsController.Display->printf("%i", seconds);
+            delay(1000);
+            --seconds;
+          }
+          ESP.restart();
+        }
+      }
+    }
+    
   }
 }
 
-/**
- * @brief Begin SD Card
- * 
- */
+/* !!! END MAIN FIRMWARE INIT FUNCTION !!! */
+
 void OrielFirmware::beginSDCard()
 {
   this->graphicsController.Display->print("sd: ");
@@ -61,19 +118,24 @@ void OrielFirmware::initializeDeviceConfig()
 /**
  * @brief Begin WiFi Connections
  * 
- * Enables the devices' WiFi hardware.
+ * Attempts to connect the device to an Access Point
+ * provided by the onboard wifi configuration json.
+ * This file is set by user intput through the internal
+ * web server.
+ * 
+ * returns true if a connection is established, and false otherwise.
  */
-void OrielFirmware::beginWiFiConnection()
+bool OrielFirmware::beginAccessPointConnection(const char * ssid, const char * password)
 {
   this->graphicsController.Display->print("WiFi: ");
-  if (this->networkController.initWiFi(this->deviceConfiguration->network_ssid, this->deviceConfiguration->network_password))
+  if (this->orielServerClientController.initWiFiStationMode(ssid, password))
   {
     this->graphicsController.Display->print("connection established.\n\n");
-    this->graphicsController.Display->print("@: ");
-    this->graphicsController.Display->printf("%s\n\n", this->deviceConfiguration->network_ssid);
-    return;
+    this->graphicsController.Display->printf("on network: %s\n", ssid);
+    return true;
   }
-  this->graphicsController.Display->print("Failed.\n");
+  this->graphicsController.Display->print("connection failed.\n");
+  return false;
 }
 
 /* !!! END DEVICE INITIALIZATION FUNCTIONS !!! */
@@ -94,26 +156,6 @@ void OrielFirmware::beginOrielServerSync(){
 
   } else {
     this->graphicsController.Display->print("no\n");
-  }
-}
-
-/**
- * @brief Apply Device Config
- *
- * Applies a DeviceConfig struct to Oriel Firmware
- * Main Settings.
- */
-bool OrielFirmware::applyDeviceConfig()
-{
-  DeviceConfig *d_c = this->fileController.parseDeviceConfigJson((char *)DEVICE_CONFIG_FILE_PATH);
-  if (d_c == NULL)
-  {
-    return false;
-  }
-  else
-  {
-    this->deviceConfiguration = d_c;
-    return true;
   }
 }
 

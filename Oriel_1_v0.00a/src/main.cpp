@@ -9,5 +9,5 @@ void setup() {
 }
 
 void loop() {
-  
+  // Serial.printf("web server active: %s\n", deviceFirmware.internalWebServer.internalWebServerActive? "Yes" : "No");
 }
