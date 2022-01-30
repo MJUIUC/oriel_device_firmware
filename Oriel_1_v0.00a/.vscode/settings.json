@@ -4,6 +4,7 @@
     "new": "cpp",
     "deviceconfig.h": "c",
     "*.tcc": "cpp",
-    "fstream": "cpp"
+    "fstream": "cpp",
+    "orielserverclientcontroller.h": "c"
   }
 }
