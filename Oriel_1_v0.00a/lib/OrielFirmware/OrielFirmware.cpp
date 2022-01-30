@@ -1,6 +1,6 @@
 #include <OrielFirmware.h>
 
-/* !!! BEGIN DEVICE INITIALIZATION FUNCTIONS !!! */
+/* !!! BEGIN MAIN FIRMWARE INIT FUNCTION !!! */
 
 /**
  * @brief Initialize Device Firmware
@@ -86,6 +86,7 @@ void OrielFirmware::beginFirmwareInitialization()
   }
 }
 
+/* !!! END MAIN FIRMWARE INIT FUNCTION !!! */
 
 void OrielFirmware::beginSDCard()
 {
