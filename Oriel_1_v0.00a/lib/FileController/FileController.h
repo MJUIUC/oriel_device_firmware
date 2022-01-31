@@ -6,14 +6,15 @@
 #include <SD.h>
 #include <FS.h>
 #include <WiFiCredentials.h>
-#include <OrielConfig.h>
+#include <Common.h>
+#include <OrielDeviceConfig.h>
 #include <HardwarePins.h>
 #include <ArduinoJson.h>
 
-#define DEVICE_CONFIG_FILE_PATH "/.device_config.json"
-#define ORIEL_CONFIG_FILE_PATH "/.oriel_config.json"
-#define WIFI_JSON_FILE_PATH "/wifi.json"
-#define DIGITAL_ASSETS_FOLDER_PATH "/digital_assets"
+#define DEVICE_CONFIG_FILE_PATH "/.oriel_device_config.json" // device configuration saved to spiffs
+#define WIFI_JSON_FILE_PATH "/wifi.json" // saved to spiffs
+#define DIGITAL_ASSETS_FOLDER_PATH "/digital_assets" // folder location of downloaded assets
+#define DIGITAL_ASSETS_SYNC_FILE_PATH "/.oriel_digital_asset_sync.json" // json file of digital asset contract address token id pairings. saved to SD
 
 typedef enum {
   JSON,
@@ -26,7 +27,7 @@ typedef enum {
 class FileController {
   public:
     WiFiCredentials* parseWiFiJsonFromSpiffs(char * wifi_json_filepath);
-    OrielConfig* parseOrielConfigJson(char * oriel_config_filepath);
+    OrielDeviceConfig* parseOrielConfigJson(char * oriel_config_filepath);
     bool initSDCard();
     bool initSPIFFS();
     // returns false if it failed to write a file

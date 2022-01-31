@@ -17,13 +17,12 @@
 #include <OrielServerClientController.h>
 #include <OrielOutBoundServerSync.h>
 #include <InternalWebServer.h>
-#include <DeviceConfig.h>
 #include <HardwarePins.h>
 
 class OrielFirmware {
   private:
     /* firmware initialization routines */
-    void beginSDCard();
+    bool beginSDCard();
     bool beginAccessPointConnection(const char * ssid, const char * password);
     void initializeDeviceConfig();
     bool wifiCredentialsExist();
@@ -34,16 +33,14 @@ class OrielFirmware {
     /* firmware controller classes */
     GraphicsController graphicsController;
     FileController fileController;
-    OrielServerClientController orielServerClientController;
     InternalWebServer internalWebServer;
-
-    /* Routine Classes, constructed after sd detected */
-    OrielOutBoundServerSync *serverSync;
+    OrielServerClientController orielServerClientController;
 
     void beginFirmwareInitialization();
-    void beginOrielServerSync();
+    void beginOrielServerSync(OrielOutBoundServerSync *serverSync);
     bool applyDeviceConfig();
 
+    // Wifi cant run without external source
     PowerState getDevicePowerState(){
       float vRead = (analogRead(VOLTAGE_CHECK_PIN) * 3.3) / 4095;
       delay(500);

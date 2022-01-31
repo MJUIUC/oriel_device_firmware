@@ -32,6 +32,7 @@ WiFiCredentials *FileController::parseWiFiJsonFromSpiffs(char * wifi_json_filepa
   }
 }
 
+// Writes a wifi.json file to SPIFFS
 bool FileController::writeWifiCredentialsToSPIFFS(WiFiCredentials *wifiCredentials){
   if (SPIFFS.exists(WIFI_JSON_FILE_PATH)) {
     SPIFFS.remove(WIFI_JSON_FILE_PATH);
@@ -53,6 +54,4 @@ bool FileController::writeWifiCredentialsToSPIFFS(WiFiCredentials *wifiCredentia
   } else {
     return false;
   }
-  // Figure out what wifi credentials are at this point
- 
 }

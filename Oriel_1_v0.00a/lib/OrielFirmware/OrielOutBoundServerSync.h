@@ -3,8 +3,8 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <DigitalAsset.h>
 #include <OrielServerClientController.h>
-#include <DeviceConfig.h>
 #include <WalletDefinitions.h>
 #include <FileController.h>
 
@@ -12,12 +12,13 @@ class OrielOutBoundServerSync {
   private:
     OrielServerClientController *orielServerClientController;
     FileController *fileController;
-    OrielConfig *orielConfig;
+    OrielDeviceConfig *orielDeviceConfig;
   public:
     OrielOutBoundServerSync();
-    OrielOutBoundServerSync(OrielConfig *orielConfig, FileController *fileController, OrielServerClientController *orielServerClientController);
+    OrielOutBoundServerSync(OrielDeviceConfig *orielConfig, FileController *fileController, OrielServerClientController *orielServerClientController);
+    void establishOrielServerConnection();
     void requestOrielConfigJson();
-    bool *requestShouldSyncBool();
+    bool requestShouldSyncBool();
 };
 
 #endif /* _ORIEL_SERVER_SYNC_H_ */

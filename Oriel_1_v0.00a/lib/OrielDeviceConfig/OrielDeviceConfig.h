@@ -1,17 +1,13 @@
-#define ORIEL_CONFIG_h
-#ifndef ORIEL_CONGIF_h
+#define ORIEL_DEVICE_CONFIG_h
+#ifndef ORIEL_DEVICE_CONGIF_h
 
 #include <Arduino.h>
+#include <DigitalAsset.h>
 
-class DigitalAsset {
-  public:
-    const char * name;
-};
-
-class OrielConfig {
+class OrielDeviceConfig {
 public:
-  OrielConfig();
-  OrielConfig(
+  OrielDeviceConfig();
+  OrielDeviceConfig(
       const char *network_ssid,
       const char *network_password,
       const char *opperating_wallet_address,
@@ -28,7 +24,15 @@ public:
   const char *latest_server_sync_timestamp_ms;
   const char *latest_firmware_update_timestamp_ms;
 
+  // Current list of digital assets on device.
+  DigitalAssetList *digital_assets;
+
+  // Check this if we need to update (write new json file) the config after an opperation.
+  bool shouldUpdateDeviceConfig = false;
+  // Check this if we need to update (write new json file) the asset list after an opperation.
+  bool shouldUpdateAssetList = false;
+
   void printSelfToSerial();
 };
 
-#endif /* _ORIEL_CONFIG_H_ */
+#endif /* _ORIEL_DEVICE_CONFIG_H_ */

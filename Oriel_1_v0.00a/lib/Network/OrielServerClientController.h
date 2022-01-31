@@ -3,7 +3,6 @@
 
 #include <WiFi.h>
 #include <WiFiClient.h>
-#include <DeviceConfig.h>
 #include <ArduinoJson.h>
 #include <FileController.h>
 

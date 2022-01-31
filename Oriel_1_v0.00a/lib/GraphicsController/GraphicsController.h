@@ -14,7 +14,7 @@
 #include <Arduino.h>
 #include <Arduino_GFX_Library.h>
 #include <JpegClass.h>
-#include <DeviceConfig.h>
+#include <Common.h>
 #include <HardwarePins.h>
 
 // #define JSON "json"

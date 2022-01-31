@@ -15,5 +15,6 @@
  * TODO: Make these change with environment flags.
  */
 
-#define DEVICE_OWNER_WALLET_ADDRESS "0x0313kejfid1ei2j3j1erorfge"
+#define DEVICE_OWNER_WALLET_ADDRESS "0x672b733c5350034ccbd265aa7636c3ebdda2223b"
+#define ORIEL_NETWORK_DEVICE_ID "61c6210dae1867be0be5e9ed"
 #define DEVICE_OWNER_WALLET_ADDRESS_BLOCKCHAIN_NAME "ethereum"

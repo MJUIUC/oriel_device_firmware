@@ -1,7 +1,5 @@
-#ifndef DEVICE_CONFIG_h
-#define DEVICE_CONFIG_h
-
-#include <Arduino.h>
+#ifndef COMMON_h
+#define COMMON_h
 
 #define DEVICE_NAME "MIRA"
 #define DEVICE_VERSION 1.0
@@ -10,7 +8,8 @@
 enum FirmwareState
 {
   IMAGE_CYCLING,
-  SERVER_SYNCING
+  ORIEL_SERVER_SYNCING,
+  HOSTING_INTERNAL_SERVER
 };
 
 enum PowerState
@@ -31,5 +30,4 @@ struct DisplayTheme
   uint16_t text_color;
 };
 
-
-#endif /* _DEVICE_CONFIG_H_ */
+#endif /* _COMMON_H */

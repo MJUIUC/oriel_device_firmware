@@ -1,15 +1,15 @@
-#include <OrielConfig.h>
+#include <OrielDeviceConfig.h>
 
-OrielConfig::OrielConfig(){}
+OrielDeviceConfig::OrielDeviceConfig(){}
 
-OrielConfig::OrielConfig(
+OrielDeviceConfig::OrielDeviceConfig(
     const char *network_ssid,
     const char *network_password,
     const char *opperating_wallet_address,
     const char *oriel_device_id,
     const char *firmware_version,
-    const char * latest_server_sync_timestamp_ms,
-    const char * latest_firmware_update_timestamp_ms)
+    const char *latest_server_sync_timestamp_ms,
+    const char *latest_firmware_update_timestamp_ms)
 {
   this->network_ssid = network_ssid;
   this->network_password = network_password;
@@ -20,7 +20,7 @@ OrielConfig::OrielConfig(
   this->latest_firmware_update_timestamp_ms = latest_firmware_update_timestamp_ms;
 }
 
-void OrielConfig::printSelfToSerial(){
+void OrielDeviceConfig::printSelfToSerial(){
   Serial.print("--Oriel Config--\n\n");
   Serial.printf("ssid: %s\n",this->network_ssid);
   Serial.printf("password: %s\n",this->network_password);
